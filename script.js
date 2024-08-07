@@ -1,3 +1,18 @@
+function smoothScrolling() {
+  const lenis = new Lenis();
+
+  lenis.on("scroll", (e) => {
+    console.log(e);
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+
+  requestAnimationFrame(raf);
+}
+
 function randomImage() {
   var arr = [
     "https://www.datocms-assets.com/106915/1717687178-betteroffstudio_work-loop_10.jpg?auto=format%2Ccompress&dpr=1.5&fit=max&h=800&w=800",
@@ -16,8 +31,27 @@ function randomImage() {
   img.setAttribute("src", arr[randomNumber]);
 }
 
-function loader(){
+function loader() {
+  var growth = document.querySelector(".growth");
+  var percent = document.querySelector(".loading-time h3");
+  var grow = 0;
 
+  var loadingInterval = setInterval(function () {
+    grow++;
+
+    percent.innerHTML = grow + "%";
+    growth.style.width = grow + "%";
+  }, 40);
+
+  setTimeout(function () {
+    clearInterval(loadingInterval);
+
+    gsap.to("#loader", {
+      y: "-100%",
+      duration: 0.6,
+      delay: 0.4,
+    });
+  }, 4040);
 }
 
 function page1Animation() {
@@ -67,7 +101,6 @@ function page3Animation() {
     scrollTrigger: {
       trigger: "#page3",
       scroller: "body",
-      markers: true,
       start: "top -13%",
       end: "top -80%",
       scrub: 1,
@@ -91,7 +124,34 @@ function page3Animation() {
   });
 }
 
-randomImage()
-page1Animation()
-page2Animation()
-page3Animation()
+function cursorAnimation() {
+  var body = document.querySelector("body");
+  var cursor = document.querySelector(".cursor");
+  var videoDiv = document.querySelector(".page3-video");
+
+  body.addEventListener("mousemove", function (dets) {
+    gsap.to(".cursor", {
+      left: dets.x,
+      top: dets.y,
+    });
+  });
+
+  videoDiv.addEventListener("mouseenter", function () {
+    gsap.to(".cursor", {
+      opacity: 1,
+    });
+  });
+  videoDiv.addEventListener("mouseleave", function () {
+    gsap.to(".cursor", {
+      opacity: 0,
+    });
+  });
+}
+
+smoothScrolling();
+randomImage();
+loader();
+page1Animation();
+page2Animation();
+page3Animation();
+cursorAnimation();
